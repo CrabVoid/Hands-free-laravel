@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Produkti' }} · Products Iterative</title>
+    <title>{{ $title ?? 'Produkti' }} · {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="site-layout">
@@ -11,7 +11,7 @@
 
     <header class="site-header">
         <div class="site-header__inner">
-            <a class="brand" href="{{ route('products.index') }}">Products Iterative</a>
+            <a class="brand" href="{{ route('products.index') }}">{{ config('app.name') }}</a>
             <nav class="primary-nav" aria-label="Galvenā navigācija">
                 <a href="{{ route('products.index') }}">Produkti</a>
                 <a href="{{ route('products.create') }}">Pievienot produktu</a>
@@ -51,7 +51,7 @@
     </div>
 
     <footer class="site-footer">
-        <small>Produktu katalogs · Products Iterative</small>
+        <small>Produktu katalogs · {{ config('app.name') }}</small>
     </footer>
 </body>
 </html>
