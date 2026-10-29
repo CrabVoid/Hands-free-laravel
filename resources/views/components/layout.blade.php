@@ -15,6 +15,8 @@
         </nav>
     </header>
     <main>
+        <p class="vite-css-test">Vite CSS ir ielādēts.</p>
+
         @if (session('status'))
             <p role="status">{{ session('status') }}</p>
         @endif
