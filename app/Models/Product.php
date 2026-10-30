@@ -2,14 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use HasFactory;
+
+    public const STATUSES = ['active', 'inactive', 'expired'];
+
     protected $fillable = [
         'name',
+        'quantity',
         'description',
-        'price',
-        'stock',
+        'expiration_date',
+        'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'expiration_date' => 'date',
+        ];
+    }
 }

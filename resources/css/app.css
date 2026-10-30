@@ -170,6 +170,7 @@ a:hover {
 }
 
 .page-content input,
+.page-content select,
 .page-content textarea {
     width: 100%;
     padding: 0.65rem 0.75rem;

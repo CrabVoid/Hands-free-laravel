@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\In;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -32,17 +34,12 @@ class ProductController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'price' => ['required', 'numeric', 'min:0', 'decimal:0,2'],
-            'stock' => ['required', 'integer', 'min:0'],
-        ]);
+        $validated = $request->validate($this->productValidationRules());
 
         $product = Product::create($validated);
 
         return redirect()->route('products.show', $product)
-            ->with('status', 'Product created successfully.');
+            ->with('status', 'Produkts veiksmīgi izveidots.');
     }
 
     /**
@@ -66,17 +63,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'price' => ['required', 'numeric', 'min:0', 'decimal:0,2'],
-            'stock' => ['required', 'integer', 'min:0'],
-        ]);
+        $validated = $request->validate($this->productValidationRules());
 
         $product->update($validated);
 
         return redirect()->route('products.show', $product)
-            ->with('status', 'Product updated successfully.');
+            ->with('status', 'Produkta izmaiņas veiksmīgi saglabātas.');
     }
 
     /**
@@ -87,6 +79,20 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')
-            ->with('status', 'Product deleted successfully.');
+            ->with('status', 'Produkts veiksmīgi izdzēsts.');
+    }
+
+    /**
+     * @return array<string, array<int, string|In>>
+     */
+    private function productValidationRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'quantity' => ['required', 'integer', 'min:0'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'expiration_date' => ['nullable', 'date'],
+            'status' => ['required', 'string', Rule::in(Product::STATUSES)],
+        ];
     }
 }

@@ -3,10 +3,12 @@
     <dl>
         <dt>Apraksts</dt>
         <dd>{{ $product->description ?: 'Apraksts nav pievienots.' }}</dd>
-        <dt>Cena</dt>
-        <dd>€{{ number_format((float) $product->price, 2) }}</dd>
         <dt>Daudzums</dt>
-        <dd>{{ $product->stock }}</dd>
+        <dd>{{ $product->quantity }}</dd>
+        <dt>Derīguma termiņš</dt>
+        <dd>{{ $product->expiration_date?->format('Y-m-d') ?? 'Nav norādīts' }}</dd>
+        <dt>Statuss</dt>
+        <dd>{{ $product->status }}</dd>
     </dl>
 
     <p><a href="{{ route('products.edit', $product) }}">Rediģēt produktu</a></p>
