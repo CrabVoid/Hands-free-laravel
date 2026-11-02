@@ -24,6 +24,28 @@
         <p data-quantity-feedback aria-live="polite"></p>
     </section>
 
+    <section class="tag-manager" data-tag-manager data-search-url="{{ route('tags.search') }}" aria-labelledby="tag-manager-heading">
+        <h2 id="tag-manager-heading">Produkta birkas</h2>
+        <form action="{{ route('products.tags.update', $product) }}" method="POST" data-tag-form>
+            @csrf
+            @method('PUT')
+            <label for="tag-search">Pievienot birku</label>
+            <input id="tag-search" type="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="tag-suggestions" data-tag-input>
+            <ul id="tag-suggestions" class="tag-suggestions" role="listbox" data-tag-suggestions hidden></ul>
+            <p class="tag-help">Izvēlies ieteikumu ar Enter vai pievieno jaunu nosaukumu.</p>
+            <ul class="tag-list" aria-label="Izvēlētās birkas" data-tag-list>
+                @foreach ($product->tags as $tag)
+                    <li class="tag-chip" data-tag-chip>
+                        <span>{{ $tag->name }}</span>
+                        <input type="hidden" name="tags[]" value="{{ $tag->name }}">
+                        <button type="button" aria-label="Noņemt birku {{ $tag->name }}" data-remove-tag>×</button>
+                    </li>
+                @endforeach
+            </ul>
+            <button type="submit">Atjaunināt birkas</button>
+        </form>
+    </section>
+
     <p><a href="{{ route('products.edit', $product) }}">Rediģēt produktu</a></p>
     <p><a href="{{ route('products.index') }}">Atpakaļ uz produktiem</a></p>
 </x-layout>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,8 @@ class ProductController extends Controller
      */
     public function show(Product $product): View
     {
+        $product->load('tags');
+
         return view('products.show', compact('product'));
     }
 
@@ -103,6 +106,32 @@ class ProductController extends Controller
 
         return redirect()->route('products.show', $product)
             ->with('status', 'Produkta izmaiņas veiksmīgi saglabātas.');
+    }
+
+    public function updateTags(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tags' => ['sometimes', 'array'],
+            'tags.*' => ['required', 'string', 'max:50'],
+        ]);
+
+        $tagNames = collect($validated['tags'] ?? [])
+            ->map(fn (string $name): string => trim($name))
+            ->filter()
+            ->unique(fn (string $name): string => mb_strtolower($name));
+
+        $tagIds = $tagNames->map(function (string $name): int {
+            $tag = Tag::query()
+                ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+                ->first();
+
+            return ($tag ?? Tag::create(['name' => $name]))->getKey();
+        });
+
+        $product->tags()->sync($tagIds);
+
+        return redirect()->route('products.show', $product)
+            ->with('status', 'Produkta birkas veiksmīgi atjauninātas.');
     }
 
     /**

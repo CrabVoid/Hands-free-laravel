@@ -220,6 +220,70 @@ a:hover {
     background: #1d4ed8;
 }
 
+.tag-manager {
+    margin-block: 1.5rem;
+}
+
+.tag-suggestions,
+.tag-list {
+    display: flex;
+    margin: 0.5rem 0 1rem;
+    padding: 0;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+}
+
+.tag-suggestions {
+    flex-direction: column;
+}
+
+.tag-suggestions button,
+.tag-chip {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #f8fafc;
+    color: var(--navy);
+}
+
+.tag-suggestions button {
+    width: 100%;
+    background: #f8fafc;
+    color: var(--navy);
+    text-align: left;
+}
+
+.tag-suggestions button:hover,
+.tag-suggestions button[aria-selected="true"] {
+    background: #dbeafe;
+    color: var(--navy);
+}
+
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.35rem 0.2rem 0.75rem;
+}
+
+.page-content .tag-chip button {
+    padding: 0.1rem 0.45rem;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--navy);
+    font-size: 1.1rem;
+}
+
+.page-content .tag-chip button:hover {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.tag-help {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
 .page-content td form {
     display: inline;
 }
