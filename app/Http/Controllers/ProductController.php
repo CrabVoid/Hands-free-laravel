@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -50,7 +51,7 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
-    public function adjustQuantity(Request $request, Product $product): RedirectResponse
+    public function adjustQuantity(Request $request, Product $product): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
             'adjustment' => ['required', 'integer', 'not_in:0'],
@@ -62,8 +63,21 @@ class ProductController extends Controller
             : $product->decreaseQuantity(abs($adjustment));
 
         if (! $quantityWasUpdated) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Daudzums noliktavā nevar būt mazāks par nulli.',
+                ], 422);
+            }
+
             return redirect()->route('products.show', $product)
                 ->withErrors(['adjustment' => 'Daudzums noliktavā nevar būt mazāks par nulli.']);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Produkta daudzums veiksmīgi atjaunināts.',
+                'quantity' => $product->quantity,
+            ]);
         }
 
         return redirect()->route('products.show', $product)

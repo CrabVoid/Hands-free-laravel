@@ -92,4 +92,31 @@ class ProductInventoryTest extends TestCase
 
         $this->assertDatabaseHas('products', ['id' => $product->id, 'quantity' => 2]);
     }
+
+    public function test_ajax_quantity_adjustment_returns_the_updated_quantity_as_json(): void
+    {
+        $product = Product::factory()->create(['quantity' => 10]);
+
+        $this->patchJson(route('products.quantity.adjust', $product), ['adjustment' => 4])
+            ->assertOk()
+            ->assertJson([
+                'message' => 'Produkta daudzums veiksmīgi atjaunināts.',
+                'quantity' => 14,
+            ]);
+
+        $this->assertDatabaseHas('products', ['id' => $product->id, 'quantity' => 14]);
+    }
+
+    public function test_ajax_quantity_adjustment_returns_json_when_quantity_would_be_negative(): void
+    {
+        $product = Product::factory()->create(['quantity' => 2]);
+
+        $this->patchJson(route('products.quantity.adjust', $product), ['adjustment' => -3])
+            ->assertUnprocessable()
+            ->assertJson([
+                'message' => 'Daudzums noliktavā nevar būt mazāks par nulli.',
+            ]);
+
+        $this->assertDatabaseHas('products', ['id' => $product->id, 'quantity' => 2]);
+    }
 }
