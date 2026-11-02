@@ -14,7 +14,7 @@ class ProductQuantityTest extends TestCase
     {
         $product = Product::factory()->create(['quantity' => 8]);
 
-        $result = $product->adjustQuantity(5);
+        $result = $product->increaseQuantity(5);
 
         $this->assertTrue($result);
         $this->assertSame(13, $product->quantity);
@@ -25,28 +25,40 @@ class ProductQuantityTest extends TestCase
     {
         $product = Product::factory()->create(['quantity' => 8]);
 
-        $result = $product->adjustQuantity(-3);
+        $result = $product->decreaseQuantity(3);
 
         $this->assertTrue($result);
         $this->assertSame(5, $product->quantity);
         $this->assertDatabaseHas('products', ['id' => $product->id, 'quantity' => 5]);
     }
 
-    public function test_it_rejects_an_adjustment_that_would_make_quantity_negative(): void
+    public function test_it_rejects_a_decrease_that_would_make_quantity_negative(): void
     {
         $product = Product::factory()->create(['quantity' => 2]);
 
-        $result = $product->adjustQuantity(-3);
+        $result = $product->decreaseQuantity(3);
 
         $this->assertFalse($result);
         $this->assertSame(2, $product->fresh()->quantity);
     }
 
-    public function test_it_rejects_a_zero_adjustment(): void
+    public function test_it_rejects_non_positive_quantity_increases(): void
     {
         $product = Product::factory()->create(['quantity' => 2]);
 
-        $this->assertFalse($product->adjustQuantity(0));
+        $this->assertFalse($product->increaseQuantity(0));
+        $this->assertFalse($product->increaseQuantity(-1));
+
+        $this->assertSame(2, $product->fresh()->quantity);
+    }
+
+    public function test_it_rejects_non_positive_quantity_decreases(): void
+    {
+        $product = Product::factory()->create(['quantity' => 2]);
+
+        $this->assertFalse($product->decreaseQuantity(0));
+        $this->assertFalse($product->decreaseQuantity(-1));
+
         $this->assertSame(2, $product->fresh()->quantity);
     }
 }

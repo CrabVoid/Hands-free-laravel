@@ -56,7 +56,12 @@ class ProductController extends Controller
             'adjustment' => ['required', 'integer', 'not_in:0'],
         ]);
 
-        if (! $product->adjustQuantity((int) $validated['adjustment'])) {
+        $adjustment = (int) $validated['adjustment'];
+        $quantityWasUpdated = $adjustment > 0
+            ? $product->increaseQuantity($adjustment)
+            : $product->decreaseQuantity(abs($adjustment));
+
+        if (! $quantityWasUpdated) {
             return redirect()->route('products.show', $product)
                 ->withErrors(['adjustment' => 'Daudzums noliktavā nevar būt mazāks par nulli.']);
         }

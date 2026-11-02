@@ -26,20 +26,33 @@ class Product extends Model
         ];
     }
 
-    public function adjustQuantity(int $adjustment): bool
+    public function increaseQuantity(int $quantity): bool
     {
-        if ($adjustment === 0) {
+        if ($quantity <= 0) {
             return false;
         }
 
-        $query = static::query()->whereKey($this->getKey());
+        $updated = static::query()->whereKey($this->getKey())
+            ->increment('quantity', $quantity);
 
-        if ($adjustment < 0) {
-            $updated = $query->where('quantity', '>=', abs($adjustment))
-                ->decrement('quantity', abs($adjustment));
-        } else {
-            $updated = $query->increment('quantity', $adjustment);
+        if ($updated === 0) {
+            return false;
         }
+
+        $this->refresh();
+
+        return true;
+    }
+
+    public function decreaseQuantity(int $quantity): bool
+    {
+        if ($quantity <= 0) {
+            return false;
+        }
+
+        $updated = static::query()->whereKey($this->getKey())
+            ->where('quantity', '>=', $quantity)
+            ->decrement('quantity', $quantity);
 
         if ($updated === 0) {
             return false;
