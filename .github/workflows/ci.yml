@@ -45,3 +45,6 @@ jobs:
 
       - name: Run Laravel tests
         run: php artisan test --compact
+
+      - name: Build deployable Docker image
+        run: docker build --tag hands-free-laravel .

@@ -1,0 +1,16 @@
+.git
+.github
+.idea
+.vscode
+.env
+.env.*
+!.env.example
+auth.json
+node_modules
+vendor
+public/build
+public/hot
+storage/logs/*.log
+tests
+coverage
+database/database.sqlite
