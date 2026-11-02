@@ -50,6 +50,21 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
+    public function adjustQuantity(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'adjustment' => ['required', 'integer', 'not_in:0'],
+        ]);
+
+        if (! $product->adjustQuantity((int) $validated['adjustment'])) {
+            return redirect()->route('products.show', $product)
+                ->withErrors(['adjustment' => 'Daudzums noliktavā nevar būt mazāks par nulli.']);
+        }
+
+        return redirect()->route('products.show', $product)
+            ->with('status', 'Produkta daudzums veiksmīgi atjaunināts.');
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

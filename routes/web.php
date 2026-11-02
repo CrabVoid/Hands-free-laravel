@@ -5,3 +5,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/products');
 Route::resource('products', ProductController::class);
+Route::patch('products/{product}/quantity', [ProductController::class, 'adjustQuantity'])
+    ->name('products.quantity.adjust');
